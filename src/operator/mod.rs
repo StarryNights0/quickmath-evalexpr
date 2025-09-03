@@ -79,6 +79,8 @@ pub enum Operator<NumericTypes: EvalexprNumericTypes = DefaultNumericTypes> {
     Tuple,
     /// An n-ary subexpression chain.
     Chain,
+    /// A variable drop indicator.
+    Drop,
 
     /// A constant value.
     Const {
@@ -141,6 +143,7 @@ impl<NumericTypes: EvalexprNumericTypes> Operator<NumericTypes> {
 
             Tuple => 40,
             Chain => 0,
+            Drop => 180,
 
             Const { .. } => 200,
             VariableIdentifierWrite { .. } | VariableIdentifierRead { .. } => 200,
@@ -176,6 +179,7 @@ impl<NumericTypes: EvalexprNumericTypes> Operator<NumericTypes> {
             | Assign | AddAssign | SubAssign | MulAssign | DivAssign | ModAssign | ExpAssign
             | AndAssign | OrAssign => Some(2),
             Tuple | Chain => None,
+            Drop => Some(2),
             Not | Neg | RootNode => Some(1),
             Const { .. } => Some(0),
             VariableIdentifierWrite { .. } | VariableIdentifierRead { .. } => Some(0),
@@ -390,7 +394,7 @@ impl<NumericTypes: EvalexprNumericTypes> Operator<NumericTypes> {
                 Ok(Value::Boolean(!a))
             },
             Assign | AddAssign | SubAssign | MulAssign | DivAssign | ModAssign | ExpAssign
-            | AndAssign | OrAssign => Err(EvalexprError::ContextNotMutable),
+            | AndAssign | OrAssign | Drop => Err(EvalexprError::ContextNotMutable),
             Tuple => Ok(Value::Tuple(arguments.into())),
             Chain => {
                 if arguments.is_empty() {
@@ -458,6 +462,26 @@ impl<NumericTypes: EvalexprNumericTypes> Operator<NumericTypes> {
                 context.set_value(target, arguments[1].clone())?;
 
                 Ok(Value::Empty)
+            },
+            Drop => {
+                
+                if arguments.is_empty() {
+                    return Err(EvalexprError::wrong_operator_argument_amount(0, 1));
+                }
+                let target = arguments[0].as_string()?;
+                let value = match arguments.len() {
+                    1 => {
+                        Operator::VariableIdentifierRead {
+                            identifier: target.clone(),
+                        }
+                        .eval(&Vec::new(), context)?
+                    },
+                    2 => arguments[1].clone(),
+                    n  => return Err(EvalexprError::wrong_operator_argument_amount(n, 2))
+                };
+                context.drop_value(target)?;
+
+                Ok(value)
             },
             AddAssign | SubAssign | MulAssign | DivAssign | ModAssign | ExpAssign | AndAssign
             | OrAssign => {

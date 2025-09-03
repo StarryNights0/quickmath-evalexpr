@@ -39,6 +39,7 @@ impl<NumericTypes: EvalexprNumericTypes> Display for Operator<NumericTypes> {
 
             Tuple => write!(f, ", "),
             Chain => write!(f, "; "),
+            Drop => write!(f, " '"),
 
             Const { value } => write!(f, "{}", value),
             VariableIdentifierWrite { identifier } | VariableIdentifierRead { identifier } => {

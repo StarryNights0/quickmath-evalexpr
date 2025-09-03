@@ -1,17 +1,18 @@
-use std::ops::{BitAnd, BitOr, BitXor, Not, Shl, Shr};
+use std::{ops::{BitAnd, BitOr, BitXor, Not, Shl, Shr}};
 
 use crate::{EvalexprError, EvalexprResult, Value};
 
 use super::{EvalexprFloat, EvalexprInt, EvalexprNumericTypes};
 
+
 /// See [`EvalexprNumericTypes`].
 ///
-/// This empty struct uses [`i64`] as its integer type and [`f64`] as its float type.
+/// This empty struct uses [`i128`] as its integer type and [`f64`] as its float type.
 #[derive(Debug, Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub struct DefaultNumericTypes;
 
 impl EvalexprNumericTypes for DefaultNumericTypes {
-    type Int = i64;
+    type Int = i128;
     type Float = f64;
 
     fn int_as_float(int: &Self::Int) -> Self::Float {
@@ -23,7 +24,7 @@ impl EvalexprNumericTypes for DefaultNumericTypes {
     }
 }
 
-impl<NumericTypes: EvalexprNumericTypes<Int = Self>> EvalexprInt<NumericTypes> for i64 {
+impl<NumericTypes: EvalexprNumericTypes<Int = Self>> EvalexprInt<NumericTypes> for i128 {
     const MIN: Self = Self::MIN;
     const MAX: Self = Self::MAX;
 
@@ -145,6 +146,7 @@ impl<NumericTypes: EvalexprNumericTypes<Int = Self>> EvalexprInt<NumericTypes> f
         Shr::shr(*self, *rhs)
     }
 }
+
 
 impl<NumericTypes: EvalexprNumericTypes<Float = Self>> EvalexprFloat<NumericTypes> for f64 {
     const MIN: Self = Self::NEG_INFINITY;

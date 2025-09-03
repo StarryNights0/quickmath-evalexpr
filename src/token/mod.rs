@@ -48,6 +48,7 @@ pub enum Token<NumericTypes: EvalexprNumericTypes = DefaultNumericTypes> {
     // Special
     Comma,
     Semicolon,
+    Apostrophe,
 
     // Values, Variables and Functions
     Identifier(String),
@@ -109,6 +110,7 @@ fn char_to_partial_token<NumericTypes: EvalexprNumericTypes>(
 
         ',' => PartialToken::Token(Token::Comma),
         ';' => PartialToken::Token(Token::Semicolon),
+        '\'' => PartialToken::Token(Token::Apostrophe),
 
         '=' => PartialToken::Eq,
         '!' => PartialToken::ExclamationMark,
@@ -153,6 +155,7 @@ impl<NumericTypes: EvalexprNumericTypes> Token<NumericTypes> {
 
             Token::Comma => false,
             Token::Semicolon => false,
+            Token::Apostrophe => false,
 
             Token::Assign => false,
             Token::PlusAssign => false,
@@ -197,6 +200,7 @@ impl<NumericTypes: EvalexprNumericTypes> Token<NumericTypes> {
 
             Token::Comma => false,
             Token::Semicolon => false,
+            Token::Apostrophe => false,
 
             Token::Assign => false,
             Token::PlusAssign => false,
@@ -230,6 +234,7 @@ impl<NumericTypes: EvalexprNumericTypes> Token<NumericTypes> {
                 | HatAssign
                 | AndAssign
                 | OrAssign
+                | Apostrophe
         )
     }
 }
@@ -516,7 +521,7 @@ mod tests {
     #[test]
     fn test_partial_token_display() {
         let chars = vec![
-            '+', '-', '*', '/', '%', '^', '(', ')', ',', ';', '=', '!', '>', '<', '&', '|', ' ',
+            '+', '-', '*', '/', '%', '^', '(', ')', ',', ';', '=', '!', '>', '<', '&', '|', ' '
         ];
 
         for char in chars {
@@ -530,7 +535,7 @@ mod tests {
     #[test]
     fn test_token_display() {
         let token_string =
-            "+ - * / % ^ == != > < >= <= && || ! ( ) = += -= *= /= %= ^= &&= ||= , ; ";
+            "+ - * / % ^ == != > < >= <= && || ! ( ) = += -= *= /= %= ^= &&= ||= , ; ' ";
         let tokens = tokenize::<DefaultNumericTypes>(token_string).unwrap();
         let mut result_string = String::new();
 
@@ -544,13 +549,13 @@ mod tests {
     #[test]
     fn test_skip_comment() {
         let token_string =
-            "+ - * / % ^ == != > < >= <= && || ! ( ) = += -= *= /= %= ^= &&= ||= , ; ";
+            "+ - * / % ^ == != > < >= <= && || ! ( ) = += -= *= /= %= ^= &&= ||= , ; ' ";
 
         let token_string_with_comments = r"+ - * / % ^ == != > 
             < >= <= && /* inline comment */ || ! ( ) 
             = += -= *= /= %= ^=
             // line comment
-            &&= ||= , ; 
+            &&= ||= , ; ' 
             ";
 
         let tokens = tokenize::<DefaultNumericTypes>(token_string_with_comments).unwrap();

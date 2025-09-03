@@ -880,6 +880,7 @@ pub(crate) fn tokens_to_operator_tree<NumericTypes: EvalexprNumericTypes>(
 
             Token::Comma => Some(Node::new(Operator::Tuple)),
             Token::Semicolon => Some(Node::new(Operator::Chain)),
+            Token::Apostrophe => Some(Node::new(Operator::Drop)),
 
             Token::Identifier(identifier) => {
                 let mut result = Some(Node::new(Operator::variable_identifier_read(

@@ -47,6 +47,7 @@ impl<NumericTypes: EvalexprNumericTypes> fmt::Display for Token<NumericTypes> {
             // Special
             Comma => write!(f, ","),
             Semicolon => write!(f, ";"),
+            Apostrophe => write!(f, "'"),
 
             // Values => write!(f, ""), Variables and Functions
             Identifier(identifier) => identifier.fmt(f),
