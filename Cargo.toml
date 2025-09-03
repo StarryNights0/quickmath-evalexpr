@@ -1,11 +1,11 @@
 [package]
-name = "evalexpr"
-version = "12.0.2"
+name = "quickmath-evalexpr"
+version = "12.0.2+1"
 description = "A powerful arithmetic and boolean expression evaluator"
 keywords = ["expression", "evaluate", "evaluator", "arithmetic", "boolean"]
 categories = ["parsing", "game-engines"]
 authors = ["isibboi <isibboi@gmail.com>"]
-repository = "https://github.com/ISibboI/evalexpr.git"
+repository = "https://github.com/StarryNights0/quickmath-evalexpr"
 homepage = "https://github.com/ISibboI/evalexpr"
 documentation = "https://docs.rs/evalexpr"
 readme = "README.md"
@@ -15,8 +15,8 @@ rust-version = "1.65.0"
 
 [badges]
 maintenance = { status = "actively-developed" }
-is-it-maintained-issue-resolution = { repository = "ISibboI/evalexpr" }
-is-it-maintained-open-issues = { repository = "ISibboI/evalexpr" }
+is-it-maintained-issue-resolution = { repository = "StarryNights0/quickmath-evalexpr" }
+is-it-maintained-open-issues = { repository = "StarryNights0/quickmath-evalexpr" }
 
 [lib]
 name = "evalexpr"
